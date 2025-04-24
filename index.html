@@ -4,171 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leverantörs Portalen</title>
-  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
       margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      padding: 0;
       height: 100vh;
-      text-align: center;
-    }
-
-    .logo {
-      font-size: 48px;
-      font-weight: bold;
-      color: #007BFF;
-      margin-bottom: 40px;
-    }
-
-    .logo span {
-      color: #333;
-    }
-
-    .wrapper {
-      background-color: white;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .login-section {
-      width: 45%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-
-    .info-section {
-      width: 45%;
-      padding-left: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .description {
-      font-size: 18px;
-      color: #333;
-      line-height: 1.6;
-      text-align: left;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-      max-width: 100%;
-    }
-
     .container {
-      margin-top: 20px;
-    }
-
-    .login-form input {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      color: #007BFF;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    input {
       padding: 10px;
-      margin: 10px 0;
+      font-size: 16px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
     }
-
-    .login-form button {
-      width: 100%;
+    button {
       padding: 10px;
+      font-size: 16px;
       background-color: #007BFF;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
+      margin-top: 10px;
     }
-
-    .login-form button:hover {
+    button:hover {
       background-color: #0056b3;
     }
-
+    .toggle-link {
+      margin-top: 10px;
+      text-align: center;
+      color: #007BFF;
+      cursor: pointer;
+    }
     .error-message {
       color: red;
       margin-top: 10px;
     }
-
-    .create-contact {
-      display: block;
-      margin-top: 20px;
-      color: #007BFF;
-      text-decoration: none;
-    }
-
-    .create-contact:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-
-  <h1 class="logo">Leverantörs Portalen</h1>
-
-  <div class="wrapper">
-    <div class="login-section">
-      <div class="container">
-        <form class="login-form" id="login-form">
-          <input type="text" placeholder="E-post" id="username" required>
-          <input type="password" placeholder="Lösenord" id="password" required>
-          <button type="submit">Logga in</button>
-        </form>
-
-        <div id="error-message" class="error-message"></div>
-
-        <a href="create-contact.html" class="create-contact">Skapa kontakt</a>
-      </div>
-    </div>
-
-    <div class="info-section">
-      <div class="description">
-        <h2>Vad är Leverantörs Portalen?</h2>
-        <p>
-          Leverantörs Portalen är ett innovativt företag som hjälper andra företag att digitalisera sina processer och effektivisera verksamheten. Vi erbjuder anpassade lösningar för att skapa framtidens arbetsmiljöer.
-        </p>
-        <p>
-          Genom att använda vår plattform kan företag snabbt och enkelt organisera sina dataflöden, hantera bild- och dokumentuppladdningar och optimera sina arbetsprocesser.
-        </p>
-      </div>
+  <div class="container">
+    <h1>Välkommen</h1>
+    <div id="formContainer">
+      <form id="authForm">
+        <div class="form-group">
+          <input type="email" id="email" placeholder="E-post" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" placeholder="Lösenord" required>
+        </div>
+        <button type="submit" id="submitBtn">Logga in</button>
+        <div class="error-message" id="error"></div>
+      </form>
+      <div class="toggle-link" id="toggleLink">Skapa ett konto istället</div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    // JavaScript för inloggning
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-      event.preventDefault(); // Förhindra att sidan laddas om
+    const supabaseUrl = 'https://vkcefoaqsgumbgatjxwj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-      const username = document.getElementById('username').value.toLowerCase(); // Gör användarnamnet till gemener
-      const password = document.getElementById('password').value.toLowerCase(); // Gör lösenordet till gemener
+    let isLogin = true;
 
-      // Här kan du definiera dina användarnamn och lösenord
-      const validUsername = 'dataviken';
-      const validPassword = '12345';
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorElement = document.getElementById('error');
+      errorElement.textContent = '';
 
-      // Kontrollera om användaren och lösenordet är rätt (ignorerar stora och små bokstäver)
-      if (username === validUsername && password === validPassword) {
-        // Spara användarnamn och titel i localStorage
-        localStorage.setItem('loggedInUser', username);
-        localStorage.setItem('userTitle', 'Admin');
-        window.location.href = "welcome.html"; // Skicka till välkomstsidan
+      if (isLogin) {
+        const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          errorElement.textContent = error.message;
+        } else {
+          window.location.href = 'welcome.html';
+        }
       } else {
-        document.getElementById('error-message').textContent = 'Fel användarnamn eller lösenord!';
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          errorElement.textContent = error.message;
+        } else {
+          alert('Konto skapat! Du kan nu logga in.');
+          toggleMode();
+        }
       }
     });
-  </script>
 
+    document.getElementById('toggleLink').addEventListener('click', toggleMode);
+
+    function toggleMode() {
+      isLogin = !isLogin;
+      document.getElementById('submitBtn').textContent = isLogin ? 'Logga in' : 'Skapa konto';
+      document.getElementById('toggleLink').textContent = isLogin ? 'Skapa ett konto istället' : 'Logga in istället';
+    }
+  </script>
 </body>
 </html>
