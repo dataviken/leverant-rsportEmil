@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Logga in – Leverantörsportalen</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const supabaseUrl = "https://vkcefoaqsgumbgatjxwj.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE";
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+</script>
   <style>
     body {
       margin: 0;
