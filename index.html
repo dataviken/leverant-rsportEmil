@@ -30,27 +30,37 @@
       font-size: 18px;
       color: #333;
     }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #dc3545;
+      background-color: #007BFF;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 10px;
+      width: 100%;
     }
     button:hover {
-      background-color: #c82333;
+      background-color: #0056b3;
     }
-    .link {
+    .toggle-link {
       margin-top: 15px;
       display: block;
       color: #007BFF;
       text-decoration: none;
       font-size: 14px;
+      cursor: pointer;
     }
-    .link:hover {
+    .toggle-link:hover {
       text-decoration: underline;
     }
   </style>
@@ -59,9 +69,11 @@
 <body>
   <div class="welcome-box">
     <h1>Välkommen!</h1>
-    <p>Du är nu inloggad i Leverantörsportalen.</p>
-    <button onclick="logout()">Logga ut</button>
-    <a href="register.html" class="link">Skapa ett konto</a>
+    <p id="form-title">Logga in med e-post och lösenord</p>
+    <input type="email" id="email" placeholder="E-post">
+    <input type="password" id="password" placeholder="Lösenord">
+    <button onclick="handleAuth()" id="authButton">Logga in</button>
+    <span class="toggle-link" onclick="toggleForm()">Skapa ett konto istället</span>
   </div>
 
   <script>
@@ -69,9 +81,35 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = 'index.html';
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      document.getElementById('form-title').textContent = isLogin ? 'Logga in med e-post och lösenord' : 'Skapa ett konto med e-post och lösenord';
+      document.getElementById('authButton').textContent = isLogin ? 'Logga in' : 'Skapa konto';
+      document.querySelector('.toggle-link').textContent = isLogin ? 'Skapa ett konto istället' : 'Logga in istället';
+    }
+
+    async function handleAuth() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        alert('Vänligen fyll i både e-post och lösenord.');
+        return;
+      }
+
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) return alert('Fel inloggningsuppgifter.');
+        alert('Inloggning lyckades!');
+        window.location.href = 'welcome.html';
+      } else {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) return alert('Registrering misslyckades.');
+        alert('Konto skapat! Du kan nu logga in.');
+        toggleForm();
+      }
     }
   </script>
 </body>
