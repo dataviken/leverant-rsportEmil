@@ -1,490 +1,67 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Leverantörs Portalen – Välkommen</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Välkommen</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
-
-    .container {
-      background-color: white;
-      padding: 30px;
+    .welcome-box {
+      background: white;
+      padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 400px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
     }
-
-    .section-box {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    h1, h2, h3 {
-      margin: 0 0 15px;
-    }
-
-    h2 {
+    h1 {
       color: #007BFF;
     }
-
-    .logout-link {
-      display: inline-block;
-      margin-top: 10px;
-      color: #FF5733;
-      text-decoration: none;
-      font-weight: bold;
+    p {
+      font-size: 18px;
+      color: #333;
     }
-
-    .logout-link:hover {
-      text-decoration: underline;
-    }
-
-    .btn-tab {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: none;
-      margin: 5px 5px 15px 0;
-      cursor: pointer;
-      font-size: 14px;
-      color: white;
-      background-color: steelblue;
-    }
-
-    .btn-tab.active {
-      background-color: gray;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
-    }
-
-    input, select {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .user-entry {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    .user-entry input[type="text"], .user-entry input[type="email"] {
-      margin-top: 5px;
-      margin-bottom: 5px;
-    }
-
-    .user-entry-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn-remove {
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
       background-color: #dc3545;
       color: white;
       border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
+      margin-top: 20px;
     }
-
-    .btn-remove:hover {
+    button:hover {
       background-color: #c82333;
     }
-
-    .hidden {
-      display: none;
-    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="section-box">
-      <h1>Välkommen till:</h1>
-      <h2>Leverantörs Portalen</h2>
-      <p>Du är inloggad som <strong id="usernameDisplay"></strong></p>
-      <p>Titel: <strong id="titleDisplay"></strong></p>
-      <a href="index.html" class="logout-link" onclick="logout()">Logga ut</a>
-    </div>
-
-    <div id="adminSection" class="section-box hidden">
-      <button class="btn-tab" id="btnAdd" onclick="toggleTab('add')">Skapa Företag</button>
-      <button class="btn-tab" id="btnManage" onclick="toggleTab('manage')">Hantera Företag</button>
-
-      <div id="addUserSection" class="hidden">
-        <div class="form-group"><input type="text" id="company" placeholder="Företags Namn"></div>
-        <button class="btn-tab" onclick="addUser()">Skapa Företag</button>
-      </div>
-
-      <div id="manageUserSection" class="hidden">
-        <div id="userList"></div>
-      </div>
-    </div>
+  <div class="welcome-box">
+    <h1>Välkommen!</h1>
+    <p>Du är nu inloggad i Leverantörsportalen.</p>
+    <button onclick="logout()">Logga ut</button>
   </div>
 
   <script>
-    const user = localStorage.getItem("loggedInUser") || "Okänd användare";
-    const title = localStorage.getItem("userTitle") || "Okänd titel";
+    const supabaseUrl = 'https://vkcefoaqsgumbgatjxwj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    document.getElementById("usernameDisplay").textContent = user;
-    document.getElementById("titleDisplay").textContent = title;
-
-    if (title.toLowerCase() === "admin") {
-      document.getElementById("adminSection").classList.remove("hidden");
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
     }
-
-    function logout() {
-      localStorage.removeItem("loggedInUser");
-      localStorage.removeItem("userTitle");
-      localStorage.removeItem("users");
-      window.location.href = "index.html";
-    }
-
-    function toggleTab(tab) {
-      const btnAdd = document.getElementById("btnAdd");
-      const btnManage = document.getElementById("btnManage");
-      const addUserSection = document.getElementById("addUserSection");
-      const manageUserSection = document.getElementById("manageUserSection");
-
-      if (tab === "add") {
-        const active = btnAdd.classList.contains("active");
-        btnAdd.classList.toggle("active", !active);
-        btnManage.classList.remove("active");
-        addUserSection.classList.toggle("hidden", active);
-        manageUserSection.classList.add("hidden");
-      } else {
-        const active = btnManage.classList.contains("active");
-        btnManage.classList.toggle("active", !active);
-        btnAdd.classList.remove("active");
-        manageUserSection.classList.toggle("hidden", active);
-        addUserSection.classList.add("hidden");
-        if (!active) renderUsers();
-      }
-    }
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-function addUser() {
-  const company = document.getElementById("company").value.trim();
-
-  if (!company) {
-    alert("Fyll i företagsnamnet.");
-    return;
-  }
-
-  const exists = users.some(u => u.company.toLowerCase() === company.toLowerCase());
-  if (exists) {
-    alert("Detta företagsnamn finns redan.");
-    return;
-  }
-
-  users.push({ company, name: "", email: "", phone: "", password: "", role: "Företag" });
-  saveUsers();
-
-  document.getElementById("company").value = "";
-  toggleTab("manage");
-}
-
-// renderUsers: Renderar användare grupperade per företag och hanterar klickinteraktioner för att visa/dölja användardata
-function renderUsers() {
-  const list = document.getElementById("userList");
-  list.innerHTML = "";
-
-  const spacer = document.createElement("div");
-  spacer.style.height = "20px";
-  list.appendChild(spacer);
-
-  const grouped = {};
-  users.forEach((user, i) => {
-    if (!grouped[user.company]) grouped[user.company] = [];
-    grouped[user.company].push({ ...user, index: i });
-  });
-
-  Object.keys(grouped).sort().forEach(company => {
-    const companyDiv = document.createElement("div");
-    companyDiv.textContent = company;
-    companyDiv.className = "btn-tab company-tab";
-    companyDiv.style.width = "fit-content";
-    companyDiv.style.display = "block";
-
-    const userContainer = document.createElement("div");
-    userContainer.className = "hidden company-users";
-    userContainer.style.marginBottom = "20px";
-
-    const inlineAddUserBtn = document.createElement("button");
-    inlineAddUserBtn.textContent = "Skapa användare";
-    inlineAddUserBtn.className = "btn-tab inline-add-user hidden";
-    inlineAddUserBtn.style.backgroundColor = "steelblue";
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Ta bort";
-    deleteBtn.className = "btn-tab";
-    deleteBtn.style.color = "#dc3545";
-    deleteBtn.style.backgroundColor = "white";
-    deleteBtn.style.border = "1px solid #dc3545";
-    deleteBtn.classList.add("hidden");
-
-    deleteBtn.onclick = () => {
-      if (confirm(Är du säker på att du vill ta bort företaget '${company}'?)) {
-        if (confirm(Detta kommer ta bort alla användare i '${company}'. Är du helt säker?)) {
-          users = users.filter(user => user.company !== company);
-          saveUsers();
-          renderUsers();
-
-          const confirmationMsg = document.createElement("div");
-          confirmationMsg.textContent = Företaget '${company}' och dess användare har tagits bort.;
-          confirmationMsg.style.color = "green";
-          confirmationMsg.style.margin = "10px 0";
-          confirmationMsg.style.fontWeight = "bold";
-          list.prepend(confirmationMsg);
-
-          setTimeout(() => confirmationMsg.remove(), 4000);
-        }
-      }
-    };
-
-    const addUserForm = document.createElement("div");
-    addUserForm.className = "form-group inline-add-form hidden";
-    addUserForm.style.marginTop = "10px";
-
-    const nameInput = document.createElement("input");
-    nameInput.placeholder = "För & Efternamn:";
-
-    const emailInput = document.createElement("input");
-    emailInput.type = "email";
-    emailInput.placeholder = "E-postadress:";
-
-    const phoneInput = document.createElement("input");
-    phoneInput.type = "text";
-    phoneInput.placeholder = "Telefonnummer:";
-
-    const passwordInput = document.createElement("input");
-    passwordInput.type = "password";
-    passwordInput.placeholder = "Lösenord:";
-
-    const note = document.createElement("p");
-    note.textContent = "Användarens inloggningsuppgifter är den angivna e-postadressen samt lösenordet.";
-    note.style.fontSize = "12px";
-    note.style.marginTop = "5px";
-    note.style.color = "#555";
-
-    const roleSelect = document.createElement("select");
-    ["Kund", "Admin"].forEach(roleOption => {
-      const option = document.createElement("option");
-      option.value = roleOption;
-      option.textContent = roleOption;
-      roleSelect.appendChild(option);
-    });
-
-    const createBtn = document.createElement("button");
-    createBtn.textContent = "Skapa användare";
-    createBtn.className = "btn-tab";
-    createBtn.onclick = () => {
-      const name = nameInput.value.trim();
-      const email = emailInput.value.trim().toLowerCase();
-      const phone = phoneInput.value.trim();
-      const password = passwordInput.value.trim();
-      if (!name || !email || !password || !phone) {
-        alert("Fyll i alla fält.");
-        return;
-      }
-      const role = roleSelect.value;
-      users.push({ company, name, email, phone, password, role });
-      saveUsers();
-      nameInput.value = "";
-      emailInput.value = "";
-      phoneInput.value = "";
-      passwordInput.value = "";
-      roleSelect.selectedIndex = 0;
-      renderUsers();
-    };
-
-    addUserForm.appendChild(nameInput);
-    addUserForm.appendChild(emailInput);
-    addUserForm.appendChild(phoneInput);
-    addUserForm.appendChild(passwordInput);
-    addUserForm.appendChild(roleSelect);
-    addUserForm.appendChild(note);
-    addUserForm.appendChild(createBtn);
-
-    inlineAddUserBtn.onclick = () => {
-      const isVisible = !addUserForm.classList.contains("hidden");
-      addUserForm.classList.toggle("hidden");
-      inlineAddUserBtn.classList.toggle("active", !isVisible);
-      inlineAddUserBtn.textContent = isVisible ? "Skapa användare" : "Stäng formulär";
-    };
-
-    companyDiv.onclick = () => {
-      const isAlreadyActive = companyDiv.classList.contains('active');
-      document.querySelectorAll('.company-tab').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.company-users').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.btn-tab.inline-add-user').forEach(btn => {
-        btn.classList.remove("active");
-        btn.textContent = "Skapa användare";
-        btn.classList.add("hidden");
-      });
-      document.querySelectorAll('.form-group.inline-add-form').forEach(form => form.classList.add('hidden'));
-      document.querySelectorAll('.btn-tab').forEach(btn => {
-        if (btn.textContent === "Ta bort") btn.classList.add("hidden");
-      });
-
-      if (!isAlreadyActive) {
-        companyDiv.classList.add("active");
-        userContainer.classList.remove("hidden");
-        inlineAddUserBtn.classList.remove("hidden");
-        deleteBtn.classList.remove("hidden");
-      }
-    };
-
-    const companyWrapper = document.createElement("div");
-    companyWrapper.style.display = "flex";
-    companyWrapper.style.justifyContent = "space-between";
-    companyWrapper.style.alignItems = "flex-start";
-    companyWrapper.style.marginBottom = "5px";
-
-    const buttonGroup = document.createElement("div");
-    buttonGroup.style.display = "flex";
-    buttonGroup.style.flexDirection = "row";
-    buttonGroup.style.gap = "10px";
-
-    buttonGroup.appendChild(deleteBtn);
-    buttonGroup.appendChild(inlineAddUserBtn);
-
-    companyWrapper.appendChild(companyDiv);
-    companyWrapper.appendChild(buttonGroup);
-
-    list.appendChild(companyWrapper);
-    list.appendChild(userContainer);
-    userContainer.appendChild(addUserForm);
-
-    grouped[company].forEach(({ name, email, role, password, index }) => {
-      const userDiv = document.createElement("div");
-      userDiv.className = "btn-tab";
-      userDiv.textContent = name;
-      userDiv.style.marginBottom = "5px";
-
-      const infoDiv = document.createElement("div");
-      infoDiv.className = "user-entry hidden";
-      infoDiv.style.marginTop = "10px";
-
-      userDiv.onclick = () => {
-        const isActive = userDiv.classList.contains("active");
-        document.querySelectorAll('.user-entry').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.btn-tab.active').forEach(el => el.classList.remove('active'));
-        if (!isActive) {
-          userDiv.classList.add("active");
-          infoDiv.classList.remove("hidden");
-        } else {
-          userDiv.classList.remove("active");
-          infoDiv.classList.add("hidden");
-        }
-      };
-
-      const nameInput = document.createElement("input");
-      nameInput.type = "text";
-      nameInput.value = name;
-      nameInput.oninput = () => { users[index].name = nameInput.value; };
-
-      const emailInput = document.createElement("input");
-      emailInput.type = "email";
-      emailInput.value = email;
-      emailInput.oninput = () => { users[index].email = emailInput.value; };
-
-      const roleSelect = document.createElement("select");
-      ["Admin", "Kund"].forEach(r => {
-        const option = document.createElement("option");
-        option.value = r;
-        option.textContent = r;
-        if (r === role) option.selected = true;
-        roleSelect.appendChild(option);
-      });
-      roleSelect.onchange = () => { users[index].role = roleSelect.value; };
-
-      const removeBtn = document.createElement("button");
-      removeBtn.textContent = "Ta bort";
-      removeBtn.className = "btn-remove";
-      removeBtn.onclick = () => {
-        if (confirm("Är du säker på att du vill ta bort denna användare?")) {
-          users.splice(index, 1);
-          saveUsers();
-          renderUsers();
-        }
-      };
-
-      const saveBtn = document.createElement("button");
-      saveBtn.textContent = "Spara";
-      saveBtn.className = "btn-tab";
-      saveBtn.style.marginTop = "10px";
-      saveBtn.onclick = () => {
-        saveUsers();
-        alert("Användaren har sparats.");
-      };
-
-      const actionDiv = document.createElement("div");
-      actionDiv.className = "user-entry-actions";
-      actionDiv.appendChild(roleSelect);
-      actionDiv.appendChild(removeBtn);
-
-      infoDiv.appendChild(nameInput);
-      infoDiv.appendChild(emailInput);
-      infoDiv.appendChild(actionDiv);
-      infoDiv.appendChild(saveBtn);
-
-      userContainer.appendChild(userDiv);
-      userContainer.appendChild(infoDiv);
-    });
-  });
-}
-
-function saveUsers() {
-  localStorage.setItem("users", JSON.stringify(users));
-}
-
-const loginForm = document.getElementById("login-form");
-if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const username = document.getElementById("username").value.toLowerCase();
-    const password = document.getElementById("password").value;
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-    const foundUser = storedUsers.find(
-      u => u.email.toLowerCase() === username && u.password === password
-    );
-
-    if (foundUser) {
-      localStorage.setItem("loggedInUser", foundUser.name);
-      localStorage.setItem("userTitle", foundUser.role);
-      window.location.href = "welcome.html";
-    } else {
-      const errorMsg = document.getElementById("error-message");
-      if (errorMsg) errorMsg.textContent = "Fel e-postadress eller lösenord!";
-    }
-  });
-}
-
-renderUsers();
-
-
   </script>
 </body>
 </html>
