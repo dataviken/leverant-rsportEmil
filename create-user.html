@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skapa Användare – Leverantörs Portalen</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .wrapper {
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+
+    .success-message {
+      color: green;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Skapa Ny Användare</h1>
+
+  <div class="wrapper">
+    <form id="create-user-form">
+      <div class="form-group">
+        <label for="username">Användarnamn</label>
+        <input type="text" id="username" placeholder="Användarnamn" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Lösenord</label>
+        <input type="password" id="password" placeholder="Lösenord" required>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Välj roll</label>
+        <select id="role" required>
+          <option value="Admin">Admin</option>
+          <option value="Kund">Kund</option>
+          <option value="Användare">Användare</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Skapa Användare</button>
+      </div>
+      
+      <div id="error-message" class="error-message"></div>
+      <div id="success-message" class="success-message"></div>
+    </form>
+  </div>
+
+  <script>
+    // Funktion för att skapa användare och spara i localStorage
+    document.getElementById('create-user-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Förhindra att sidan laddas om
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      // Hämta nuvarande användare från localStorage
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Kontrollera om användarnamnet redan finns
+      const existingUser = users.find(user => user.username.toLowerCase() === username.toLowerCase());
+      if (existingUser) {
+        document.getElementById('error-message').textContent = 'Användarnamnet finns redan!';
+        return;
+      }
+
+      // Skapa ny användare
+      const newUser = {
+        username: username,
+        password: password,
+        role: role
+      };
+
+      // Lägg till ny användare i listan
+      users.push(newUser);
+
+      // Spara användarna i localStorage
+      localStorage.setItem('users', JSON.stringify(users));
+
+      // Visa framgångsmeddelande
+      document.getElementById('success-message').textContent = `Användare ${username} skapad med rollen ${role}.`;
+
+      // Töm fälten
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('role').value = 'Admin';
+    });
+  </script>
+
+</body>
+</html>

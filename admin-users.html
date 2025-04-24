@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – Leverantörs Portalen</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      height: 100vh;
+      text-align: left;
+    }
+
+    .wrapper {
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .user-list {
+      margin-top: 20px;
+    }
+
+    .user-item {
+      margin-bottom: 10px;
+    }
+
+    .user-item span {
+      margin-right: 10px;
+    }
+
+    .user-item select {
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    .logout-link {
+      color: #007BFF;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Admin Panel</h1>
+
+  <div class="wrapper">
+    <div class="user-list" id="user-list">
+      <!-- Lista över användare visas här -->
+    </div>
+
+    <a href="index.html" class="logout-link">Logga ut</a>
+  </div>
+
+  <script>
+    // Hämtar användare från localStorage och visar dem
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    const userListDiv = document.getElementById('user-list');
+    users.forEach(user => {
+      const userItem = document.createElement('div');
+      userItem.classList.add('user-item');
+      userItem.innerHTML = `
+        <span>${user.username}</span>
+        <span>Rolle: ${user.role}</span>
+        <select class="role-select" data-username="${user.username}">
+          <option value="Admin" ${user.role === 'Admin' ? 'selected' : ''}>Admin</option>
+          <option value="Kund" ${user.role === 'Kund' ? 'selected' : ''}>Kund</option>
+          <option value="Användare" ${user.role === 'Användare' ? 'selected

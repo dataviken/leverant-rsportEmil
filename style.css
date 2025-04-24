@@ -1,0 +1,122 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.wrapper {
+  text-align: center;
+}
+
+.logo {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1e3a8a;
+}
+
+.logo span {
+  color: #0ea5e9;
+}
+
+.container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 300px;
+  margin: 0 auto;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.login-form button {
+  padding: 10px;
+  background-color: steelblue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: #4682b4;
+}
+
+.create-contact {
+  display: inline-block;
+  margin-top: 20px;
+  color: steelblue;
+  text-decoration: none;
+}
+
+.create-contact:hover {
+  text-decoration: underline;
+}
+
+/* Felmeddelande stil */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Ny stil för info-boxen */
+.info-box {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 500px; /* Ändrat till 500px för att göra den mycket bredare */
+}
+
+.info-box h1 {
+  margin: 0;
+  font-size: 18px;
+  color: #000;
+  font-weight: normal;
+}
+
+.info-box h2 {
+  margin: 5px 0 15px;
+  font-size: 22px;
+  color: #007BFF;
+}
+
+.info-box p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.logout-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #FF5733;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.logout-link:hover {
+  text-decoration: underline;
+}
