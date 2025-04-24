@@ -175,7 +175,280 @@
         btnManage.classList.remove("active");
         addUserSection.classList.toggle("hidden", active);
         manageUserSection.classList.add("hidden");
+      } else {<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leverantörs Portalen – Välkommen</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+
+    .section-box {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 15px;
+    }
+
+    h2 {
+      color: #007BFF;
+    }
+
+    .logout-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #FF5733;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+
+    .btn-tab {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      margin: 5px 5px 15px 0;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+      background-color: steelblue;
+    }
+
+    .btn-tab.active {
+      background-color: gray;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    input, select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .user-entry {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .user-entry input[type="text"], .user-entry input[type="email"] {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .user-entry-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-remove {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-remove:hover {
+      background-color: #c82333;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="section-box">
+      <h1>Välkommen till:</h1>
+      <h2>Leverantörs Portalen</h2>
+      <p>Du är inloggad som <strong id="usernameDisplay"></strong></p>
+      <p>Titel: <strong id="titleDisplay"></strong></p>
+      <a href="index.html" class="logout-link" onclick="logout()">Logga ut</a>
+    </div>
+
+    <div id="adminSection" class="section-box hidden">
+      <button class="btn-tab" id="btnAdd" onclick="toggleTab('add')">Skapa Företag</button>
+      <button class="btn-tab" id="btnManage" onclick="toggleTab('manage')">Hantera Företag</button>
+
+      <div id="addUserSection" class="hidden">
+        <div class="form-group"><input type="text" id="company" placeholder="Företags Namn"></div>
+        <button class="btn-tab" onclick="addUser()">Skapa Företag</button>
+      </div>
+
+      <div id="manageUserSection" class="hidden">
+        <div id="userList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const supabaseUrl = "https://vkcefoaqsgumbgatjxwj.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE";
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const user = localStorage.getItem("loggedInUser") || "Okänd användare";
+    const title = localStorage.getItem("userTitle") || "Okänd titel";
+
+    document.getElementById("usernameDisplay").textContent = user;
+    document.getElementById("titleDisplay").textContent = title;
+
+    if (title.toLowerCase() === "admin") {
+      document.getElementById("adminSection").classList.remove("hidden");
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("userTitle");
+      window.location.href = "index.html";
+    }
+
+    function toggleTab(tab) {
+      const btnAdd = document.getElementById("btnAdd");
+      const btnManage = document.getElementById("btnManage");
+      const addUserSection = document.getElementById("addUserSection");
+      const manageUserSection = document.getElementById("manageUserSection");
+
+      if (tab === "add") {
+        const active = btnAdd.classList.contains("active");
+        btnAdd.classList.toggle("active", !active);
+        btnManage.classList.remove("active");
+        addUserSection.classList.toggle("hidden", active);
+        manageUserSection.classList.add("hidden");
       } else {
+        const active = btnManage.classList.contains("active");
+        btnManage.classList.toggle("active", !active);
+        btnAdd.classList.remove("active");
+        manageUserSection.classList.toggle("hidden", active);
+        addUserSection.classList.add("hidden");
+        if (!active) renderUsers();
+      }
+    }
+
+    async function addUser() {
+      const company = document.getElementById("company").value.trim();
+      if (!company) {
+        alert("Fyll i företagsnamnet.");
+        return;
+      }
+
+      const { data: existing, error: fetchError } = await supabase
+        .from("users")
+        .select("company")
+        .eq("company", company);
+
+      if (fetchError) {
+        alert("Fel vid kontroll av företag: " + fetchError.message);
+        return;
+      }
+
+      if (existing.length > 0) {
+        alert("Detta företagsnamn finns redan.");
+        return;
+      }
+
+      const { error } = await supabase.from("users").insert([
+        { company, name: "", email: "", phone: "", password: "", role: "Företag" }
+      ]);
+
+      if (error) {
+        alert("Fel vid sparning: " + error.message);
+      } else {
+        document.getElementById("company").value = "";
+        toggleTab("manage");
+        renderUsers();
+      }
+    }
+
+    async function renderUsers() {
+      const list = document.getElementById("userList");
+      list.innerHTML = "";
+
+      const { data: users, error } = await supabase.from("users").select("*");
+      if (error) {
+        list.innerHTML = `<p style="color: red;">Kunde inte hämta användare: ${error.message}</p>`;
+        return;
+      }
+
+      const grouped = {};
+      users.forEach(user => {
+        if (!grouped[user.company]) grouped[user.company] = [];
+        grouped[user.company].push(user);
+      });
+
+      Object.keys(grouped).sort().forEach(company => {
+        const companyItem = document.createElement("div");
+        companyItem.textContent = company;
+        companyItem.className = "btn-tab";
+        companyItem.style.marginBottom = "10px";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Ta bort";
+        deleteBtn.className = "btn-remove";
+        deleteBtn.onclick = async () => {
+          if (confirm(`Är du säker på att du vill ta bort företaget '${company}' och alla dess användare?`)) {
+            const { error } = await supabase.from("users").delete().eq("company", company);
+            if (error) {
+              alert("Fel vid borttagning: " + error.message);
+            } else {
+              renderUsers();
+            }
+          }
+        };
+
+        const wrapper = document.createElement("div");
+        wrapper.style.display = "flex";
+        wrapper.style.justifyContent = "space-between";
+        wrapper.style.alignItems = "center";
+        wrapper.appendChild(companyItem);
+        wrapper.appendChild(deleteBtn);
+
+        list.appendChild(wrapper);
+      });
+    }
+
+    renderUsers();
+  </script>
+</body>
+</html>
+
         const active = btnManage.classList.contains("active");
         btnManage.classList.toggle("active", !active);
         btnAdd.classList.remove("active");
