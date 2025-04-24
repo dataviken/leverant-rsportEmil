@@ -39,9 +39,10 @@
       border-radius: 6px;
       cursor: pointer;
       margin-top: 20px;
+      width: 100%;
     }
     button:hover {
-      background-color: #c82333;
+      background-color: #bb2d3b;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -49,52 +50,23 @@
 <body>
   <div class="welcome-box">
     <h1>Välkommen!</h1>
-    <p>Du är nu inloggad i Leverantörsportalen.</p>
+    <p>Du är inloggad!</p>
     <button onclick="logout()">Logga ut</button>
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
     const supabaseUrl = 'https://vkcefoaqsgumbgatjxwj.supabase.co';
-    const supabaseKey = '...';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    let isLogin = true;
-
-    document.getElementById('authForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorElement = document.getElementById('error');
-      errorElement.textContent = '';
-
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          errorElement.textContent = error.message;
-        } else {
-          window.location.href = 'welcome.html';
-        }
+    async function logout() {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        alert('Misslyckades att logga ut.');
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          errorElement.textContent = error.message;
-        } else {
-          alert('Konto skapat! Du kan nu logga in.');
-          toggleMode();
-        }
+        window.location.href = 'index.html';
       }
-    });
-
-    document.getElementById('toggleLink').addEventListener('click', toggleMode);
-
-    function toggleMode() {
-      isLogin = !isLogin;
-      document.getElementById('submitBtn').textContent = isLogin ? 'Logga in' : 'Skapa konto';
-      document.getElementById('toggleLink').textContent = isLogin ? 'Skapa ett konto istället' : 'Logga in istället';
     }
-  });
-</script>
-
+  </script>
 </body>
 </html>
