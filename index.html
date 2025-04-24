@@ -22,6 +22,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       text-align: center;
       max-width: 400px;
+      width: 100%;
     }
     h1 {
       color: #007BFF;
@@ -30,15 +31,8 @@
       font-size: 18px;
       color: #333;
     }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    button {
+    button, a.button-link {
+      display: block;
       padding: 10px 20px;
       font-size: 16px;
       background-color: #007BFF;
@@ -46,22 +40,18 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
+      margin-top: 15px;
+      text-align: center;
+      text-decoration: none;
     }
-    button:hover {
+    button:hover, a.button-link:hover {
       background-color: #0056b3;
     }
-    .toggle-link {
-      margin-top: 15px;
-      display: block;
-      color: #007BFF;
-      text-decoration: none;
-      font-size: 14px;
-      cursor: pointer;
+    a.logout {
+      background-color: #dc3545;
     }
-    .toggle-link:hover {
-      text-decoration: underline;
+    a.logout:hover {
+      background-color: #bb2d3b;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -69,48 +59,15 @@
 <body>
   <div class="welcome-box">
     <h1>Välkommen!</h1>
-    <p id="form-title">Logga in med e-post och lösenord</p>
-    <input type="email" id="email" placeholder="E-post">
-    <input type="password" id="password" placeholder="Lösenord">
-    <button onclick="handleAuth()" id="authButton">Logga in</button>
-    <span class="toggle-link" onclick="toggleForm()">Skapa ett konto istället</span>
+    <p>Vill du logga in eller skapa ett konto?</p>
+    <a href="login.html" class="button-link">Logga in</a>
+    <a href="register.html" class="button-link">Skapa ett konto istället</a>
   </div>
 
   <script>
     const supabaseUrl = 'https://vkcefoaqsgumbgatjxwj.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrY2Vmb2Fxc2d1bWJnYXRqeHdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ5NDIzNiwiZXhwIjoyMDYxMDcwMjM2fQ.HLxnYL9dLXRkpkkXj9K36K2uaLhtH93X5cOSc9o07vE';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    let isLogin = true;
-
-    function toggleForm() {
-      isLogin = !isLogin;
-      document.getElementById('form-title').textContent = isLogin ? 'Logga in med e-post och lösenord' : 'Skapa ett konto med e-post och lösenord';
-      document.getElementById('authButton').textContent = isLogin ? 'Logga in' : 'Skapa konto';
-      document.querySelector('.toggle-link').textContent = isLogin ? 'Skapa ett konto istället' : 'Logga in istället';
-    }
-
-    async function handleAuth() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        alert('Vänligen fyll i både e-post och lösenord.');
-        return;
-      }
-
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) return alert('Fel inloggningsuppgifter.');
-        alert('Inloggning lyckades!');
-        window.location.href = 'welcome.html';
-      } else {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) return alert('Registrering misslyckades.');
-        alert('Konto skapat! Du kan nu logga in.');
-        toggleForm();
-      }
-    }
   </script>
 </body>
 </html>
